@@ -6,8 +6,8 @@
 </template>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  @import "../common/stylus/variable.styl";
-  @import "../common/stylus/mixin.styl"
+  @import "../../common/stylus/variable.styl";
+  @import "../../common/stylus/mixin.styl"
 
   .m-header
     position relative
@@ -21,6 +21,7 @@
       margin-top 6px
       width 30px
       height 30px
+      bg-image(logo)
       margin-right 9px
       background-size 30px 30px
     .text

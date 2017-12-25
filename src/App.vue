@@ -5,7 +5,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import MHeader from './components/m-header.vue'
+  import MHeader from './components/mheader/m-header.vue';
 
 export default {
   components: {
