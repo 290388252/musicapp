@@ -31,7 +31,7 @@
 </style>
 
 <script type="text/ecmascript-6">
-//  import BScroll from 'better-scroll';
+  import BScroll from 'better-scroll';
   import {addClass} from '../../common/js/dom';
     export default{
         props: {
@@ -71,7 +71,15 @@
               this.$refs.sliderGroup.style.width = width + 'px';
             },
             _initSlider() {
-
+              this.slider = new BScroll(this.$refs.slider, {
+                scrollX: true,
+                scrollY: true,
+                momentum: false,
+                snap: true,
+                snapLoop: this.loop,
+                snapThreshold: 0.3,
+                snapSpeed: 400
+              });
             }
         }
     };
