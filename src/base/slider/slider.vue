@@ -73,7 +73,7 @@
             },
             interval: {
               type: Number,
-              default: 1500
+              default: 2500
             }
         },
         mounted() {
@@ -132,17 +132,16 @@
                 this.dots = new Array(this.children.length);
             },
             _play() {
-              let pageIndex = this.currentIndex;
 //              if (this.loop) {
 //                pageIndex += 1;
 //              }
               this.timer = setInterval(() => {
-                  this.slider.goToPage(pageIndex, 0, 400);
-                  if (pageIndex >= this.childrenlength) {
-                      pageIndex = 0;
+                  if (this.currentIndex >= this.childrenlength) {
+                    this.currentIndex = 0;
                   } else {
-                      pageIndex += 1;
+                    this.currentIndex += 1;
                   }
+                 this.slider.goToPage(this.currentIndex, 0, 400);
               }, this.interval);
             }
         }
