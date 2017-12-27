@@ -10,7 +10,9 @@ const portfinder = require('portfinder');
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT && Number(process.env.PORT);
-
+const app = express();
+const express = require('express');
+const apiRoutes = express.Router();
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
