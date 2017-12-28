@@ -1,6 +1,7 @@
 <template>
     <div class="recommend">
-      <div class="recommend-content">
+      <scroll class="recommend-content" :data="discList">
+        <div>
         <div v-if='recommends.length' class="slider-wrapper">
           <slider>
             <div v-for="item in recommends">
@@ -12,13 +13,25 @@
         </div>
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
-          <ul></ul>
+          <ul>
+            <li v-for="item in discList" class="item">
+              <div class="icon">
+                <img width="65" height="65" style="border-radius: 50%" :src="item.imgurl">
+              </div>
+              <div class="text">
+                <h2 class="name" v-html="item.creator.name"></h2>
+                <p class="desc" v-html="item.dissname"></p>
+              </div>
+            </li>
+          </ul>
         </div>
-      </div>
+        </div>
+      </scroll>
     </div>
 </template>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/variable.styl"
   .recommend
     position fixed
     width 100%
@@ -38,9 +51,32 @@
           text-align: center
           font-size: $font-size-medium
           color: $color-theme
+        .item
+          display flex
+          box-sizing border-box
+          align-items center
+          padding 10px 20px 10px 20px
+          border-top 1px solid $color-text-d
+          .icon
+            flex 0
+            padding-right 10px
+          .text
+            display flex
+            flex-direction column
+            justify-content center
+            flex 1
+            line-height 20px
+            font-size $font-size-medium
+            .name
+              color: $color-text
+              margin-bottom 15px
+            .desc
+              color: $color-text-d
+              margin-bottom 10px
 </style>
 
 <script type="text/ecmascript-6">
+  import Scroll from '../../base/scroll/scroll.vue';
   import Slider from '../../base/slider/slider.vue';
   import {getRecommend, getDiscList} from '../../api/recommend';
   import {ERR_OK} from '../../api/config';
@@ -48,7 +84,8 @@
     export default{
       data() {
           return {
-              recommends: []
+              recommends: [],
+              discList: []
           };
       },
       created() {
@@ -66,13 +103,15 @@
           _getDiscList() {
             getDiscList().then((res) => {
               if (res.code === ERR_OK) {
-                console.log(res);
+                  this.discList = res.data.list;
+                  console.log(this.discList);
               }
             });
           }
       },
       components: {
-          Slider
+          Slider,
+          Scroll
       }
     };
 </script>
