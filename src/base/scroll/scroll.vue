@@ -1,5 +1,5 @@
 <template>
-    <div v-ref="wrapper">
+    <div ref="wrapper">
       <slot></slot>
     </div>
 </template>
@@ -25,9 +25,9 @@
             }
         },
         mounted() {
-            setTimeout(() => {
+          setTimeout(() => {
                 this._initScroll();
-            }, 20)
+            }, 20);
         },
         methods: {
           _initScroll() {
@@ -47,13 +47,11 @@
           },
           refresh() {
               this.scroll && this.scroll.refresh();
-              console.log('refresh');
           }
         },
         watch: {
             data() {
                 setTimeout(() => {
-                    console.log('setTimeout');
                     this.refresh();
                 }, 20);
             }
