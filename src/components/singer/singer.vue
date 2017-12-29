@@ -1,5 +1,6 @@
 <template>
     <div class="singer">
+      <list-view :data="singerList"></list-view>
     </div>
 </template>
 
@@ -15,6 +16,7 @@
   import {getSingerList} from '../../api/singer';
   import {ERR_OK} from '../../api/config';
   import Singer from '../../common/js/singer';
+  import ListView from '../../base/listview/listview.vue';
 
   let HOT_NAME = '热门';
   let HOT_SINGER_LENGTH = 10;
@@ -32,8 +34,8 @@
         _getSingerList() {
           getSingerList().then((res) => {
             if (res.code === ERR_OK) {
-              this.singerList = res.data.list;
-              console.log(this._normalizeSinger(this.singerList));
+              this.singerList = this._normalizeSinger(res.data.list);
+              console.log(this.singerList);
             }
           });
         },
@@ -63,8 +65,27 @@
                   name: item.Fsinger_name
                 }));
             });
-            return map;
+            let hot = [];
+            let ret = [];
+            // 遍历数组map key为第几位
+            for (let key in map) {
+                let val = map[key];
+                if (val.title.match(/[a-zA-Z]/)) {
+                  ret.push(val);
+                } else if (val.title === HOT_NAME) {
+                    hot.push(val);
+                }
+            }
+            // a-b升序 b-a降序 用charcodeAt讲字母转化为数字，在进行排序
+            ret.sort((a, b) => {
+                return a.title.charCodeAt(0) - b.title.charCodeAt(0);
+            });
+            // 链接两个数组
+            return hot.concat(ret);
         }
+      },
+      components: {
+        ListView
       }
     };
 </script>
