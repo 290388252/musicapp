@@ -4,8 +4,8 @@
         <li v-for="group in data" class="list-group">
           <h2 class="list-group-title">{{group.title}}</h2>
           <ul>
-            <li v-for="item in group.item">
-              <img :src="item.avatar" width="40" height="40">
+            <li v-for="item in group.item" class="list-group-item">
+              <img :src="item.avatar" width="60" height="60" style="border-radius: 50%">
               <span class="name">{{item.name}}</span>
             </li>
           </ul>
@@ -21,6 +21,20 @@
     height: 100%
     overflow: hidden
     background: $color-background
+    .list-group
+      .list-group-title
+        background $color-text-d
+        height 28px
+        line-height 28px
+        padding-left 8px
+      .list-group-item
+        padding 10px 0 10px 10px
+        display flex
+        align-items center
+        border-bottom 1px solid $color-text-d
+        .name
+          margin-left 5px
+          font-size: $font-size-medium
 </style>
 
 <script type="text/ecmascript-6">
