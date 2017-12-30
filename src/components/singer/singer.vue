@@ -1,6 +1,9 @@
 <template>
     <div class="singer">
       <list-view :data="singerList"></list-view>
+      <div class="loading-contain" v-show="!singerList.length">
+        <loading></loading>
+      </div>
     </div>
 </template>
 
@@ -11,6 +14,11 @@
     width 100%
     top: 88px
     bottom 0
+    .loading-contain
+      position absolute
+      top 50%
+      width 100%
+      transform translateY(-50%)
 </style>
 
 <script type="text/ecmascript-6">
@@ -18,6 +26,7 @@
   import {ERR_OK} from '../../api/config';
   import Singer from '../../common/js/singer';
   import ListView from '../../base/listview/listview.vue';
+  import Loading from '../../base/loading/loading.vue';
 
   let HOT_NAME = '热门';
   let HOT_SINGER_LENGTH = 10;
@@ -29,7 +38,9 @@
         };
       },
       created() {
-        this._getSingerList();
+        setTimeout(() => {
+          this._getSingerList();
+        }, 2000);
       },
       methods: {
         _getSingerList() {
@@ -86,7 +97,8 @@
         }
       },
       components: {
-        ListView
+        ListView,
+        Loading
       }
     };
 </script>
