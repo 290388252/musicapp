@@ -7,9 +7,10 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/variable.styl"
   .singer
-    display fixed
+    position fixed
     width 100%
-    height 100%
+    top: 88px
+    bottom 0
 </style>
 
 <script type="text/ecmascript-6">

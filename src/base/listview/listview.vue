@@ -17,7 +17,6 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/variable.styl"
   .listview
-    position: relative
     width: 100%
     height: 100%
     overflow: hidden
