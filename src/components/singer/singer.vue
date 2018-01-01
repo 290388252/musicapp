@@ -40,7 +40,7 @@
       created() {
         setTimeout(() => {
           this._getSingerList();
-        }, 2000);
+        }, 500);
       },
       methods: {
         _getSingerList() {
