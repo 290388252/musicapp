@@ -1,11 +1,11 @@
 <template>
-    <scroll :data="data" class="listview" ref="listview">
+    <scroll :data="data" class="listview" ref="listview" :listenScroll="listenScroll">
       <ul>
         <li v-for="group in data" class="list-group" ref="listGroup">
           <h2 class="list-group-title">{{group.title}}</h2>
           <ul>
             <li v-for="item in group.item" class="list-group-item">
-              <img v-lazy="item.avatar" width="60" height="60" style="border-radius: 50%">
+              <img v-lazy="item.avatar" width="55" height="55" style="border-radius: 50%">
               <span class="name">{{item.name}}</span>
             </li>
           </ul>
@@ -29,16 +29,20 @@
     overflow: hidden
     background: $color-background
     .list-group
+      padding-bottom: 30px
       .list-group-title
         background $color-text-d
         height 28px
         line-height 28px
         padding-left 8px
       .list-group-item
-        padding 10px 0 10px 10px
+        padding 10px 0 10px 25px
         display flex
         align-items center
         border-bottom 1px solid $color-text-d
+        &:first-child
+          margin-top 20px
+          border-top 1px solid $color-text-d
         .name
           margin-left 5px
           font-size: $font-size-medium
@@ -65,6 +69,7 @@
     export default{
         created() {
           this.touch = {};
+          this.listenScroll = true;
         },
         data() {
           return {
