@@ -28,6 +28,7 @@
   import Singer from '../../common/js/singer';
   import ListView from '../../base/listview/listview.vue';
   import Loading from '../../base/loading/loading.vue';
+  import {mapMutations} from 'vuex';
 
   let HOT_NAME = '热门';
   let HOT_SINGER_LENGTH = 10;
@@ -48,6 +49,7 @@
           this.$router.push({
               path: `/singer/${item.id}`
           });
+          this.setSinger(item);
         },
         _getSingerList() {
           getSingerList().then((res) => {
@@ -100,7 +102,10 @@
             });
             // 链接两个数组
             return hot.concat(ret);
-        }
+        },
+        ...mapMutations({
+            setSinger: 'SET_SINGER'
+        })
       },
       components: {
         ListView,
