@@ -1,6 +1,9 @@
 <template>
   <transition name="slide">
     <div class="singer-detail">
+      <div class="singer-detail-img">
+        <img :src="singer.avatar" width="100%" height="280px">
+      </div>
     </div>
   </transition>
 </template>
@@ -24,6 +27,9 @@
 
 <script type="text/ecmascript-6">
   import {mapGetters} from 'vuex';
+  import {getSingerDetail} from '../../api/singer';
+  import {ERR_OK} from '../../api/config';
+
     export default{
         computed: {
           ...mapGetters([
@@ -32,6 +38,20 @@
         },
         created() {
             console.log(this.singer);
+            this._getSingerDetail();
+        },
+        methods: {
+            _getSingerDetail() {
+              if (!this.singer.id) {
+                  this.$router.push('/singer');
+                  return;
+              }
+              getSingerDetail(this.singer.id).then((res) => {
+                  if (res.code === ERR_OK) {
+                      console.log(res.data.list);
+                  }
+              });
+            }
         }
     };
 </script>

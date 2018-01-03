@@ -47,7 +47,7 @@
       methods: {
         selectSinger(item) {
           this.$router.push({
-              path: `/singer/${item.id}`
+              path: `/singer/${item.mid}`
           });
           this.setSinger(item);
         },
@@ -69,7 +69,8 @@
             list.forEach((item, index) => {
                 if (index < HOT_SINGER_LENGTH) {
                     map.hot.item.push(new Singer({
-                        id: item.Fsinger_mid,
+                        id: item.Fsinger_id,
+                        mid: item.Fsinger_mid,
                         name: item.Fsinger_name
                     }));
                 }
@@ -81,7 +82,8 @@
                     };
                 }
                 map[key].item.push(new Singer({
-                  id: item.Fsinger_mid,
+                  id: item.Fsinger_id,
+                  mid: item.Fsinger_mid,
                   name: item.Fsinger_name
                 }));
             });
