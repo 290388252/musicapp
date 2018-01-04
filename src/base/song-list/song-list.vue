@@ -31,6 +31,11 @@
           no-wrap()
           font-size $font-size-medium
           color $color-text-d
+  .loading-contain
+    position absolute
+    top 50%
+    width 100%
+    transform translateY(-50%)
 </style>
 
 <script type="text/ecmascript-6">
