@@ -5,6 +5,7 @@ import Recommend from '../components/recommend/recommend.vue';
 import Search from '../components/search/search.vue';
 import Singer from '../components/singer/singer.vue';
 import SingerDetail from '../components/singer-detail/singer-detail.vue';
+import '../common/stylus/index.styl';
 
 Vue.use(Router);
 
