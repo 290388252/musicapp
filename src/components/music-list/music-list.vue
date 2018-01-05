@@ -99,6 +99,7 @@
   import SongList from '../../base/song-list/song-list.vue';
   import Loading from '../../base/loading/loading.vue';
   import {prefixStyle} from '../../common/js/dom';
+  import {mapActions} from 'vuex';
 
   const RESERVED_HEIGHT = 40;
   const transform = prefixStyle('transform');
@@ -169,7 +170,14 @@
       back() {
           this.$router.back();
       },
+      ...mapActions([
+          'selectPlay'
+      ]),
       selectSong(song, index) {
+          this.selectPlay({
+              list: this.songs, // play all song list
+              index
+          });
       }
     },
     components: {
