@@ -16,7 +16,7 @@
     <div class="bg-layer" ref="layer"></div>
     <scroll @scroll="scroll" :data="songs" class="list" ref="list" :probeType="probeType" :listenScroll="listenScroll">
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @select="selectSong"></song-list>
       </div>
       <div class="loading-contain" v-show="!songs.length">
         <loading></loading>
@@ -168,6 +168,8 @@
       },
       back() {
           this.$router.back();
+      },
+      selectSong(song, index) {
       }
     },
     components: {
