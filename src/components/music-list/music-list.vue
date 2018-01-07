@@ -174,6 +174,7 @@
           'selectPlay'
       ]),
       selectSong(song, index) {
+          console.log(index);
           this.selectPlay({
               list: this.songs, // play all song list
               index
