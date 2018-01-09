@@ -19,9 +19,9 @@
         </div>
         <div class="middle">
           <div class="middle-l">
-            <div class="cd-wrapper">
+            <div class="cd-wrapper" ref="cdwrapper">
               <div class="cd">
-                <img :src="currentSong.image" class="image">
+                <img :src="currentSong.image" class="image" :class="cdCls">
               </div>
             </div>
           </div>
@@ -32,13 +32,13 @@
               <i class="icon-sequence"></i>
             </div>
             <div class="icon i-left">
-              <i class="icon-prev"></i>
+              <i @click="pre" class="icon-prev"></i>
             </div>
             <div class="icon i-center">
-              <i class="icon-play"></i>
+              <i :class="playingIcon" @click="togglePlaying"></i>
             </div>
             <div class="icon i-right">
-              <i class="icon-next"></i>
+              <i @click="next" class="icon-next"></i>
             </div>
             <div class="icon i-right">
               <i class="icon-not-favorite"></i>
@@ -50,18 +50,21 @@
       <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
-          <img width="40" height="40" :src="currentSong.image">
+          <img width="40" height="40" :src="currentSong.image" :class="cdCls">
         </div>
         <div class="text">
           <h2 class="name">{{currentSong.name}}</h2>
           <p class="desc">{{currentSong.singer}}</p>
         </div>
-        <div class="control"></div>
         <div class="control">
-          <i class="icon-playlist"></i>
+          <i :class="playingMiniIcon" @click.stop="togglePlaying" style="font-size: 30px"></i>
+        </div>
+        <div class="control">
+          <i class="icon-playlist" style="font-size: 30px"></i>
         </div>
       </div>
       </transition>
+      <audio :src="currentSong.url" ref="audio"></audio>
     </div>
 </template>
 
@@ -83,13 +86,14 @@
         left 0
         right 0
         top 0
-        bottom 0
         width: 100%
         height: 100%
         z-index: -1
         opacity: 0.6
         filter: blur(20px)
       .top
+        position: relative
+        margin-bottom: 25px
         .back
           position absolute
           top 0
@@ -121,6 +125,7 @@
         bottom 170px
         white-space: nowrap
         border-radius 50%
+        font-size: 0
         .middle-l
           display inline-block
           vertical-align top
@@ -141,12 +146,16 @@
               border: 10px solid rgba(255, 255, 255, 0.1)
               border-radius: 50%
               .image
-                position: absolute;
-                left: 11px;
-                top: 11px;
-                width: 93%;
-                height: 93%;
-                border-radius: 50%;
+                position: absolute
+                left: 11px
+                top: 11px
+                width: 93%
+                height: 93%
+                border-radius: 50%
+                &.play
+                  animation: rotate 20s linear infinite
+                &.pause
+                  animation-play-state: paused
       .bottom
         position: absolute
         bottom: 50px
@@ -196,6 +205,10 @@
         padding: 0 10px 0 20px
         img
           border-radius: 50%
+          &.play
+            animation: rotate 20s linear infinite
+          &.pause
+            animation-play-state: paused
       .text
         display: flex
         flex-direction: column
@@ -216,17 +229,39 @@
         flex: 0 0 30px
         width: 30px
         padding: 0 10px
+
+  @keyframes rotate
+    0%
+      transform: rotate(0)
+    100%
+      transform: rotate(360deg)
+
 </style>
 
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex';
+  import animations from 'create-keyframe-animation';
+  import {prefixStyle} from '../../common/js/dom';
+
+  const transform = prefixStyle('transform');
 
     export default{
       computed: {
+        cdCls() {
+          return this.playing ? 'play' : 'pause';
+        },
+        playingIcon() {
+            return this.playing ? 'icon-pause' : 'icon-play';
+        },
+        playingMiniIcon() {
+          return this.playing ? 'icon-pause-mini' : 'icon-play-mini';
+        },
         ...mapGetters([
           'fullScreen',
           'playList',
-          'currentSong'
+          'currentSong',
+          'playing',
+          'currentIndex'
         ])
       },
       created() {
@@ -239,13 +274,96 @@
         open() {
           this.setFullScreen(true);
         },
-        enter(el, done) {},
-        afterEnter() {},
-        leave(el, done) {},
-        afterLeave() {},
+        togglePlaying() {
+          this.setPlayState(!this.playing);
+        },
+        pre() {
+            let index = this.currentIndex - 1;
+            if (index === -1) {
+                index = this.playList.length - 1;
+            }
+            this.setCurrentIndex(index);
+        },
+        next() {
+          let index = this.currentIndex + 1;
+          if (index === this.playList.length) {
+            index = 0;
+          }
+          this.setCurrentIndex(index);
+        },
+        enter(el, done) {
+            const {x, y, scale} = this._getPos();
+
+            let animation = {
+                0: {
+                    transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
+                },
+                60: {
+                    transform: `translate3d(0,0,0) scale(1,1)`
+                },
+                100: {
+                    transform: `translate3d(0,0,0) scale(1)`
+                }
+            };
+
+            animations.registerAnimation({
+                name: 'move',
+                animation,
+                presets: {
+                    duration: 400,
+                    easing: 'linear'
+                }
+            });
+
+            animations.runAnimation(this.$refs.cdwrapper, 'move', done);
+        },
+        afterEnter() {
+          animations.unregisterAnimation('move');
+          this.$refs.cdwrapper.style.animation = '';
+        },
+        leave(el, done) {
+          this.$refs.cdwrapper.style.transition = 'all 0.4s';
+          const {x, y, scale} = this._getPos();
+          this.$refs.cdwrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`;
+          this.$refs.cdwrapper.addEventListener('transitionend', done);
+        },
+        afterLeave() {
+          this.$refs.cdwrapper.style.transition = '';
+          this.$refs.cdwrapper.style[transform] = '';
+        },
+        _getPos() {
+            const targetWidth = 30;
+            const paddingleft = 40;
+            const paddingBottom = 30;
+            const paddingTop = 80;
+            const width = window.innerWidth * 0.8;
+            const scale = targetWidth / width;
+            const x = -(window.innerWidth / 2 - paddingleft);
+            const y = window.innerHeight - paddingTop - (width / 2) - paddingBottom;
+            return {
+                x,
+                y,
+                scale
+            };
+        },
         ...mapMutations({
-            setFullScreen: 'SET_FULL_SCREEN'
+            setFullScreen: 'SET_FULL_SCREEN',
+            setPlayState: 'SET_PLAYING_STATE',
+            setCurrentIndex: 'SET_CURRENT_INDEX'
         })
+      },
+      watch: {
+          currentSong() {
+              this.$nextTick(() => {
+                this.$refs.audio.play();
+              });
+          },
+          playing(newPlaying) {
+              let audio = this.$refs.audio;
+              this.$nextTick(() => {
+                newPlaying ? audio.play() : audio.pause();
+              });
+          }
       }
     };
 </script>
