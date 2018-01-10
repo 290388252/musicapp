@@ -29,7 +29,9 @@
         <div class="bottom">
           <div class="progress-wrapper">
             <span class="time time-l">{{format(currentTime)}}</span>
-            <div class="progress-bar-wrapper"></div>
+            <div class="progress-bar-wrapper">
+              <progress-bar></progress-bar>
+            </div>
             <span class="time time-r">{{format(currentSong.duration)}}</span>
           </div>
           <div class="operators">
@@ -128,7 +130,6 @@
         top 88px
         bottom 170px
         white-space: nowrap
-        border-radius 50%
         font-size: 0
         .middle-l
           display inline-block
@@ -164,6 +165,21 @@
         position: absolute
         bottom: 50px
         width: 100%
+        .progress-wrapper
+          display flex
+          align-items center
+          width 80%
+          margin 0px auto
+          padding 10px 0
+          .time
+            font-size $font-size-medium
+            flex 1 0 30px
+            line-height 30px
+            width 40px
+            &.time-l
+              text-align left
+            &.time-r
+              text-align right
         .operators
           display: flex
           align-items: center
@@ -210,7 +226,7 @@
         img
           border-radius: 50%
           &.play
-            animation: rotate 20s linear infinite
+            animation: rotate 20s linear forwards
           &.pause
             animation-play-state: paused
       .text
@@ -244,12 +260,14 @@
   import {mapGetters, mapMutations} from 'vuex';
   import animations from 'create-keyframe-animation';
   import {prefixStyle} from '../../common/js/dom';
+  import ProgressBar from '../../base/progress-bar/progress-bar.vue';
+
   const transform = prefixStyle('transform');
   export default{
     data() {
         return {
             songReady: false,
-            currentTime : 0
+            currentTime: 0
         };
     },
     computed: {
@@ -327,7 +345,7 @@
           let seconds = second.toString().length;
           while (seconds < 2) {
               second = '0' + second;
-              seconds ++;
+              seconds++;
           }
           return `${minute} : ${second}`;
       },
@@ -408,6 +426,9 @@
           newPlaying ? audio.play() : audio.pause();
         });
       }
+    },
+    components: {
+      ProgressBar
     }
   };
 </script>
