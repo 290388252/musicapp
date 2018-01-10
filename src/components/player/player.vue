@@ -1,11 +1,11 @@
 <template>
-    <div class="player" v-show="playList.length>0">
-      <transition name="normal"
-                  @enter="enter"
-                  @after-enter="afterEnter"
-                  @leave="leave"
-                  @after-leave="afterLeave"
-      >
+  <div class="player" v-show="playList.length>0">
+    <transition name="normal"
+                @enter="enter"
+                @after-enter="afterEnter"
+                @leave="leave"
+                @after-leave="afterLeave"
+    >
       <div class="normal-player" v-show="fullScreen">
         <div class="background">
           <img width="100%" height="100%" :src="currentSong.image">
@@ -20,8 +20,8 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdwrapper">
-              <div class="cd">
-                <img :src="currentSong.image" class="image" :class="cdCls">
+              <div class="cd" :class="cdCls">
+                <img :src="currentSong.image" class="image">
               </div>
             </div>
           </div>
@@ -46,8 +46,8 @@
           </div>
         </div>
       </div>
-      </transition>
-      <transition name="mini">
+    </transition>
+    <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
           <img width="40" height="40" :src="currentSong.image" :class="cdCls">
@@ -63,15 +63,14 @@
           <i class="icon-playlist" style="font-size: 30px"></i>
         </div>
       </div>
-      </transition>
-      <audio :src="currentSong.url" ref="audio"></audio>
-    </div>
+    </transition>
+    <audio :src="currentSong.url" ref="audio"></audio>
+  </div>
 </template>
 
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/variable.styl"
   @import "../../common/stylus/mixin.styl"
-
   .player
     .normal-player
       position: fixed
@@ -145,17 +144,17 @@
               box-sizing: border-box
               border: 10px solid rgba(255, 255, 255, 0.1)
               border-radius: 50%
+              &.play
+                animation: rotate 20s linear infinite
+              &.pause
+                animation-play-state: paused
               .image
                 position: absolute
-                left: 11px
-                top: 11px
-                width: 93%
-                height: 93%
+                left: 0
+                top: 0
+                width: 100%
+                height: 100%
                 border-radius: 50%
-                &.play
-                  animation: rotate 20s linear infinite
-                &.pause
-                  animation-play-state: paused
       .bottom
         position: absolute
         bottom: 50px
@@ -229,141 +228,134 @@
         flex: 0 0 30px
         width: 30px
         padding: 0 10px
-
   @keyframes rotate
     0%
       transform: rotate(0)
     100%
       transform: rotate(360deg)
-
 </style>
 
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex';
   import animations from 'create-keyframe-animation';
   import {prefixStyle} from '../../common/js/dom';
-
   const transform = prefixStyle('transform');
-
-    export default{
-      computed: {
-        cdCls() {
-          return this.playing ? 'play' : 'pause';
-        },
-        playingIcon() {
-            return this.playing ? 'icon-pause' : 'icon-play';
-        },
-        playingMiniIcon() {
-          return this.playing ? 'icon-pause-mini' : 'icon-play-mini';
-        },
-        ...mapGetters([
-          'fullScreen',
-          'playList',
-          'currentSong',
-          'playing',
-          'currentIndex'
-        ])
+  export default{
+    computed: {
+      cdCls() {
+        return this.playing ? 'play' : 'play pause';
       },
-      created() {
-        console.log(this.currentSong);
+      playingIcon() {
+        return this.playing ? 'icon-pause' : 'icon-play';
       },
-      methods: {
-        back() {
-          this.setFullScreen(false);
-        },
-        open() {
-          this.setFullScreen(true);
-        },
-        togglePlaying() {
-          this.setPlayState(!this.playing);
-        },
-        pre() {
-            let index = this.currentIndex - 1;
-            if (index === -1) {
-                index = this.playList.length - 1;
-            }
-            this.setCurrentIndex(index);
-        },
-        next() {
-          let index = this.currentIndex + 1;
-          if (index === this.playList.length) {
-            index = 0;
-          }
-          this.setCurrentIndex(index);
-        },
-        enter(el, done) {
-            const {x, y, scale} = this._getPos();
-
-            let animation = {
-                0: {
-                    transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
-                },
-                60: {
-                    transform: `translate3d(0,0,0) scale(1,1)`
-                },
-                100: {
-                    transform: `translate3d(0,0,0) scale(1)`
-                }
-            };
-
-            animations.registerAnimation({
-                name: 'move',
-                animation,
-                presets: {
-                    duration: 400,
-                    easing: 'linear'
-                }
-            });
-
-            animations.runAnimation(this.$refs.cdwrapper, 'move', done);
-        },
-        afterEnter() {
-          animations.unregisterAnimation('move');
-          this.$refs.cdwrapper.style.animation = '';
-        },
-        leave(el, done) {
-          this.$refs.cdwrapper.style.transition = 'all 0.4s';
-          const {x, y, scale} = this._getPos();
-          this.$refs.cdwrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`;
-          this.$refs.cdwrapper.addEventListener('transitionend', done);
-        },
-        afterLeave() {
-          this.$refs.cdwrapper.style.transition = '';
-          this.$refs.cdwrapper.style[transform] = '';
-        },
-        _getPos() {
-            const targetWidth = 30;
-            const paddingleft = 40;
-            const paddingBottom = 30;
-            const paddingTop = 80;
-            const width = window.innerWidth * 0.8;
-            const scale = targetWidth / width;
-            const x = -(window.innerWidth / 2 - paddingleft);
-            const y = window.innerHeight - paddingTop - (width / 2) - paddingBottom;
-            return {
-                x,
-                y,
-                scale
-            };
-        },
-        ...mapMutations({
-            setFullScreen: 'SET_FULL_SCREEN',
-            setPlayState: 'SET_PLAYING_STATE',
-            setCurrentIndex: 'SET_CURRENT_INDEX'
-        })
+      playingMiniIcon() {
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini';
       },
-      watch: {
-          currentSong() {
-              this.$nextTick(() => {
-                this.$refs.audio.play();
-              });
+      ...mapGetters([
+        'fullScreen',
+        'playList',
+        'currentSong',
+        'playing',
+        'currentIndex'
+      ])
+    },
+    created() {
+      console.log(this.currentSong);
+    },
+    methods: {
+      back() {
+        this.setFullScreen(false);
+      },
+      open() {
+        this.setFullScreen(true);
+      },
+      togglePlaying() {
+        this.setPlayState(!this.playing);
+      },
+      pre() {
+        let index = this.currentIndex - 1;
+        if (index === -1) {
+          index = this.playList.length - 1;
+        }
+        this.setCurrentIndex(index);
+      },
+      next() {
+        let index = this.currentIndex + 1;
+        if (index === this.playList.length) {
+          index = 0;
+        }
+        this.setCurrentIndex(index);
+      },
+      enter(el, done) {
+        const {x, y, scale} = this._getPos();
+        let animation = {
+          0: {
+            transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
           },
-          playing(newPlaying) {
-              let audio = this.$refs.audio;
-              this.$nextTick(() => {
-                newPlaying ? audio.play() : audio.pause();
-              });
+          60: {
+            transform: `translate3d(0,0,0) scale(1,1)`
+          },
+          100: {
+            transform: `translate3d(0,0,0) scale(1)`
           }
+        };
+        animations.registerAnimation({
+          name: 'move',
+          animation,
+          presets: {
+            duration: 400,
+            easing: 'linear'
+          }
+        });
+        animations.runAnimation(this.$refs.cdwrapper, 'move', done);
+      },
+      afterEnter() {
+        animations.unregisterAnimation('move');
+        this.$refs.cdwrapper.style.animation = '';
+      },
+      leave(el, done) {
+        this.$refs.cdwrapper.style.transition = 'all 0.4s';
+        const {x, y, scale} = this._getPos();
+        this.$refs.cdwrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`;
+        this.$refs.cdwrapper.addEventListener('transitionend', done);
+      },
+      afterLeave() {
+        this.$refs.cdwrapper.style.transition = '';
+        this.$refs.cdwrapper.style[transform] = '';
+      },
+      _getPos() {
+        const targetWidth = 30;
+        const paddingleft = 40;
+        const paddingBottom = 30;
+        const paddingTop = 80;
+        const width = window.innerWidth * 0.8;
+        const scale = targetWidth / width;
+        const x = -(window.innerWidth / 2 - paddingleft);
+        const y = window.innerHeight - paddingTop - (width / 2) - paddingBottom;
+        return {
+          x,
+          y,
+          scale
+        };
+      },
+      ...mapMutations({
+        setFullScreen: 'SET_FULL_SCREEN',
+        setPlayState: 'SET_PLAYING_STATE',
+        setCurrentIndex: 'SET_CURRENT_INDEX'
+      })
+    },
+    watch: {
+      currentSong() {
+        this.$nextTick(() => {
+          this.$refs.audio.play();
+        });
+      },
+      playing(newPlaying) {
+        let audio = this.$refs.audio;
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause();
+        });
       }
-    };
+    }
+  };
 </script>
