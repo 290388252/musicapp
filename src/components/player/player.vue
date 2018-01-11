@@ -35,8 +35,8 @@
             <span class="time time-r">{{format(currentSong.duration)}}</span>
           </div>
           <div class="operators">
-            <div class="icon i-left">
-              <i class="icon-sequence"></i>
+            <div class="icon i-left" @click="changeMode">
+              <i :class="iconMode"></i>
             </div>
             <div class="icon i-left" :class="disableCls">
               <i @click="prev" class="icon-prev"></i>
@@ -64,8 +64,8 @@
           <p class="desc">{{currentSong.singer}}</p>
         </div>
         <div class="control">
-          <progress-circle :radius="32">
-            <i class="icon-mini" :class="playingMiniIcon" @click.stop="togglePlaying" style="font-size: 30px"></i>
+          <progress-circle :radius="radius" :percent="percent">
+            <i class="icon-mini" :class="playingMiniIcon" @click.stop="togglePlaying" style="font-size: 32px"></i>
           </progress-circle>
         </div>
         <div class="control">
@@ -255,8 +255,8 @@
         .icon-mini
           position absolute
           color: gray
-          top 1px
-          left 1px
+          top 3px
+          left 3px
   @keyframes rotate
     0%
       transform: rotate(0)
@@ -268,6 +268,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import animations from 'create-keyframe-animation';
   import {prefixStyle} from '../../common/js/dom';
+  import {playMode} from '../../common/js/config';
   import ProgressBar from '../../base/progress-bar/progress-bar.vue';
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue';
 
@@ -276,7 +277,8 @@
     data() {
         return {
             songReady: false,
-            currentTime: 0
+            currentTime: 0,
+            radius: 38
         };
     },
     computed: {
@@ -295,12 +297,16 @@
       percent() {
           return this.currentTime / this.currentSong.duration;
       },
+      iconMode() {
+          return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
+      },
       ...mapGetters([
         'fullScreen',
         'playList',
         'currentSong',
         'playing',
-        'currentIndex'
+        'currentIndex',
+        'mode'
       ])
     },
     created() {
@@ -426,10 +432,15 @@
              this.togglePlaying();
          }
       },
+      changeMode() {
+        const mode = (this.mode + 1) % 3;
+        this.setPlayMode(mode);
+      },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
         setPlayState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX'
+        setCurrentIndex: 'SET_CURRENT_INDEX',
+        setPlayMode: 'SET_PLAY_MODE'
       })
     },
     watch: {
