@@ -269,6 +269,7 @@
   import animations from 'create-keyframe-animation';
   import {prefixStyle} from '../../common/js/dom';
   import {playMode} from '../../common/js/config';
+  import {shuffle} from '../../common/js/utils';
   import ProgressBar from '../../base/progress-bar/progress-bar.vue';
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue';
 
@@ -306,7 +307,8 @@
         'currentSong',
         'playing',
         'currentIndex',
-        'mode'
+        'mode',
+        'sequenceList'
       ])
     },
     created() {
@@ -435,6 +437,12 @@
       changeMode() {
         const mode = (this.mode + 1) % 3;
         this.setPlayMode(mode);
+        console.log(this.sequenceList);
+        let list = [];
+        if (this.mode === playMode.random) {
+          list = shuffle(this.sequenceList);
+          console.log(list);
+        }
       },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
