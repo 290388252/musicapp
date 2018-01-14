@@ -328,7 +328,15 @@
         this.setPlayState(!this.playing);
       },
       end() {
-        this.next();
+        if (this.mode === playMode.loop) {
+          this.loop();
+        } else {
+          this.next();
+        }
+      },
+      loop() {
+        this.$refs.audio.currentTime = 0;
+        this.$refs.audio.play();
       },
       prev() {
         if (!this.songReady) {
