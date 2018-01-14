@@ -5,7 +5,7 @@
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
-      <div class="play-wrapper" ref="playBtn" v-show="songs.length>0">
+      <div class="play-wrapper" ref="playBtn" v-show="songs.length>0" @click="random">
         <div class="play">
           <i class="icon-play"></i>
           <span class="text">随机播放歌曲</span>
@@ -171,7 +171,8 @@
           this.$router.back();
       },
       ...mapActions([
-          'selectPlay'
+          'selectPlay',
+          'randomPlay'
       ]),
       selectSong(song, index) {
           console.log(index);
@@ -179,6 +180,11 @@
               list: this.songs, // play all song list
               index
           });
+      },
+      random () {
+        this.randomPlay({
+          list: this.songs
+        });
       }
     },
     components: {
