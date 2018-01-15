@@ -10,6 +10,8 @@ const portfinder = require('portfinder');
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT && Number(process.env.PORT);
+const data = require('../lyric.json');
+const lyric = data.lyric;
 const express = require('express');
 const apiRoutes = express.Router();
 const axios = require('axios');
@@ -53,6 +55,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         }).catch((e) => {
           console.log(e)
         });
+      });
+      app.get('/api/lyric', (req, res) => {
+        res.json({
+          errno: 0,
+          data: lyric
+        })
       });
       // app.use('/api', apiRoutes);
     },

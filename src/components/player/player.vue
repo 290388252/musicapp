@@ -272,7 +272,7 @@
   import {shuffle} from '../../common/js/utils';
   import ProgressBar from '../../base/progress-bar/progress-bar.vue';
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue';
-  import Lyric from 'lyric-parser';
+  import { ERR_OK } from '../../api/config';
 
   const transform = prefixStyle('transform');
   export default{
@@ -314,6 +314,11 @@
     },
     created() {
       console.log(this.currentSong);
+      this.$http.get('api/lyric').then((response) => {
+        if (response.body.errno === ERR_OK) {
+          console.log(response.data);
+        }
+      });
     },
     methods: {
       back() {
@@ -467,7 +472,6 @@
       currentSong() {
         this.$nextTick(() => {
           this.$refs.audio.play();
-          console.log(new Lyric(this.currentSong.lycri));
         });
       },
       playing(newPlaying) {
