@@ -272,6 +272,7 @@
   import {shuffle} from '../../common/js/utils';
   import ProgressBar from '../../base/progress-bar/progress-bar.vue';
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue';
+  import Lyric from 'lyric-parser';
 
   const transform = prefixStyle('transform');
   export default{
@@ -466,7 +467,7 @@
       currentSong() {
         this.$nextTick(() => {
           this.$refs.audio.play();
-          this.currentSong._getLyric();
+          console.log(new Lyric(this.currentSong.lycri));
         });
       },
       playing(newPlaying) {
