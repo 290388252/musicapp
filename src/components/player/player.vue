@@ -466,6 +466,7 @@
       currentSong() {
         this.$nextTick(() => {
           this.$refs.audio.play();
+          this.currentSong._getLyric();
         });
       },
       playing(newPlaying) {
