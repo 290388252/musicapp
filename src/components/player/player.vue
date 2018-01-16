@@ -25,6 +25,11 @@
               </div>
             </div>
           </div>
+          <div class="middle-r">
+            <div class="lyric-wrapper">
+              <p class="text" v-for="line in lyricList">{{line.text}}</p>
+            </div>
+          </div>
         </div>
         <div class="bottom">
           <div class="progress-wrapper">
@@ -280,7 +285,8 @@
         return {
             songReady: false,
             currentTime: 0,
-            radius: 38
+            radius: 38,
+            lyricList: []
         };
     },
     computed: {
@@ -314,11 +320,7 @@
     },
     created() {
       console.log(this.currentSong);
-      this.$http.get('api/lyric').then((response) => {
-        if (response.body.errno === ERR_OK) {
-          console.log(response.data);
-        }
-      });
+      this._getLyrics();
     },
     methods: {
       back() {
@@ -385,6 +387,12 @@
               seconds++;
           }
           return `${minute} : ${second}`;
+      },
+      time_to_sec(time) {
+        let str = time;
+        let arr = str.split(':');
+        let seconds = arr[0] * 60 + arr[1] * 1;
+        return seconds;
       },
       ready() {
           this.songReady = true;
@@ -460,6 +468,27 @@
           list = shuffle(this.sequenceList);
           console.log(list);
         }
+      },
+      _getLyrics() {
+        this.$http.get('api/lyric').then((response) => {
+          if (response.body.errno === ERR_OK) {
+            let lyricLists = this._normlizeLyric(response.data.data);
+            this.lyricList = lyricLists.lyric;
+            console.log(this.lyricList);
+          }
+        });
+      },
+      _normlizeLyric(list) {
+          let lyrics = {
+              lyric: []
+          };
+            list.forEach((item) => {
+              lyrics.lyric.push({
+                  time: this.time_to_sec(item.time),
+                  text: item.text
+              });
+          });
+          return lyrics;
       },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
