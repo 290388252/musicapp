@@ -25,13 +25,19 @@
               </div>
             </div>
           </div>
-          <div class="middle-r">
+          <scroll class="middle-r" ref="lyric" :data="lyricList">
             <div class="lyric-wrapper">
-              <p class="text" v-for="line in lyricList">{{line.text}}</p>
+              <div>
+                <p class="text" v-for="line in lyricList">{{line.text}}</p>
+              </div>
             </div>
-          </div>
+          </scroll>
         </div>
         <div class="bottom">
+          <div class="dot-wrapper">
+            <span class="dot" :class="{'active': currentShow === 'cd'}"></span>
+            <span class="dot" :class="{'active': currentShow === 'lyric'}"></span>
+          </div>
           <div class="progress-wrapper">
             <span class="time time-l">{{format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
@@ -171,10 +177,12 @@
         .middle-r
           display: inline-block
           vertical-align: top
+          position: relative
           width: 100%
           height: 100%
           overflow: hidden
           .lyric-wrapper
+            position: absolute
             width: 80%
             margin: 0 auto
             overflow: hidden
@@ -187,6 +195,20 @@
         position: absolute
         bottom: 50px
         width: 100%
+        .dot-wrapper
+          text-align: center
+          font-size: 0
+          .dot
+            display inline-block
+            width: 8px
+            height: 8px
+            border-radius: 50%
+            margin: 0 4px
+            background: $color-text-l
+            &.active
+              width: 20px
+              border-radius: 5px
+              background: $color-text-ll
         .progress-wrapper
           display flex
           align-items center
@@ -292,6 +314,7 @@
   import {shuffle} from '../../common/js/utils';
   import ProgressBar from '../../base/progress-bar/progress-bar.vue';
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue';
+  import Scroll from '../../base/scroll/scroll.vue';
   import { ERR_OK } from '../../api/config';
 
   const transform = prefixStyle('transform');
@@ -301,7 +324,8 @@
             songReady: false,
             currentTime: 0,
             radius: 38,
-            lyricList: []
+            lyricList: [],
+            currentShow: 'cd'
         };
     },
     computed: {
@@ -527,7 +551,8 @@
     },
     components: {
       ProgressBar,
-      ProgressCircle
+      ProgressCircle,
+      Scroll
     }
   };
 </script>
