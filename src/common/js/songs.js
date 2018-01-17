@@ -2,9 +2,11 @@
  *
  * Created by Administrator on 2018/1/3.
  */
-import {getLyric} from '../../api/song';
+import {getLyric, getVKey} from '../../api/song';
 import {ERR_OK} from '../../api/config';
+import {getUid} from './uid';
 
+let urlMap = {};
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image, url, lycri}) {
     this.id = id;
@@ -15,13 +17,31 @@ export default class Song {
     this.duration = duration;
     this.image = image;
     this.url = url;
-    this.lycri = '';
+    // 确保一首歌曲的 id 只对应一个 url
+    // if (urlMap[this.id]) {
+    //   this.url = urlMap[this.id];
+    // } else {
+    //   this._genUrl();
+    // }
   }
 
   _getLyric() {
     getLyric(this.mid).then((res) => {
       if (res.retcode === ERR_OK) {
         console.log(res);
+      }
+    });
+  }
+
+  _genUrl() {
+    if (this.url) {
+      return;
+    }
+    getVKey(this.mid, this.filename).then((res) => {
+      if (res.code === ERR_OK) {
+        const vkey = res.data.items[0].vkey;
+        this.url = `http://dl.stream.qqmusic.qq.com/${this.filename}?vkey=${vkey}&guid=${getUid()}&uin=0&fromtag=66`;
+        urlMap[this.id] = this.url;
       }
     });
   }
