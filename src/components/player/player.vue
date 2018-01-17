@@ -28,11 +28,9 @@
               </div>
             </div>
           </div>
-          <scroll class="middle-r" ref="lyric" :data="lyricList">
+          <scroll class="middle-r" ref="lyric" :data="lyricList" v-show="lyricList">
             <div class="lyric-wrapper">
-              <div>
                 <p class="text" v-for="line in lyricList">{{line.text}}</p>
-              </div>
             </div>
           </scroll>
         </div>
@@ -180,12 +178,10 @@
         .middle-r
           display: inline-block
           vertical-align: top
-          position: relative
           width: 100%
           height: 100%
           overflow: hidden
           .lyric-wrapper
-            position: absolute
             width: 80%
             margin: 0 auto
             overflow: hidden
@@ -363,8 +359,16 @@
     },
     created() {
       this.touch = {};
+//      this._getLyrics();
       console.log(this.currentSong);
-      this._getLyrics();
+    },
+    mounted() {
+        this.$http.get('api/lyric').then((response) => {
+          if (response.body.errno === ERR_OK) {
+            let lyricLists = this._normlizeLyric(response.data.data);
+            this.lyricList = lyricLists.lyric;
+          }
+        });
     },
     methods: {
       back() {
@@ -443,7 +447,6 @@
       },
       error() {
         this.songReady = true;
-        console.log('');
       },
       enter(el, done) {
         const {x, y, scale} = this._getPos();
@@ -483,7 +486,7 @@
         this.$refs.cdwrapper.style[transform] = '';
       },
       _getPos() {
-        const targetWidth = 30;
+        const targetWidth = 29;
         const paddingleft = 40;
         const paddingBottom = 30;
         const paddingTop = 80;
@@ -529,7 +532,7 @@
           if (Math.abs(detalY) > Math.abs(detalX)) {
               return;
           }
-          const left = this.currentShow === 'cd' ? 0 : -window.innerWidth + 32;
+          const left = this.currentShow === 'cd' ? 0 : -window.innerWidth;
           const width = Math.min(0, Math.max(-window.innerWidth, left + detalX));
           this.touch.percent = Math.abs(width / window.innerWidth);
           this.$refs.lyric.$el.style[transform] = `translate3d(${width}px,0,0)`;
@@ -542,7 +545,7 @@
         let opacity;
         if (this.currentShow === 'cd') {
           if (this.touch.percent > 0.1) {
-            offsetWidth = -window.innerWidth + 32;
+            offsetWidth = -window.innerWidth;
             opacity = 0;
             this.currentShow = 'lyric';
             this.touch.percent = undefined;
@@ -557,7 +560,7 @@
             opacity = 1;
             this.touch.percent = undefined;
           } else {
-            offsetWidth = -window.innerWidth + 32;
+            offsetWidth = -window.innerWidth;
             opacity = 0;
           }
         }
@@ -568,15 +571,14 @@
         this.$refs.middleL.style[transitionDuration] = `${time}ms`;
         this.touch.initiated = false;
       },
-      _getLyrics() {
-        this.$http.get('api/lyric').then((response) => {
-          if (response.body.errno === ERR_OK) {
-            let lyricLists = this._normlizeLyric(response.data.data);
-            this.lyricList = lyricLists.lyric;
-            console.log(this.lyricList);
-          }
-        });
-      },
+//      _getLyrics() {
+//        this.$http.get('api/lyric').then((response) => {
+//          if (response.body.errno === ERR_OK) {
+//            let lyricLists = this._normlizeLyric(response.data.data);
+//            this.lyricList = lyricLists.lyric;
+//          }
+//        });
+//      },
       _normlizeLyric(list) {
           let lyrics = {
               lyric: []

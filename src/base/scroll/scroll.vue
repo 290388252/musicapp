@@ -31,6 +31,7 @@
         mounted() {
           setTimeout(() => {
                 this._initScroll();
+                this.refresh();
             }, 20);
         },
         methods: {
@@ -44,11 +45,12 @@
                   click: this.click
               });
               if (this.listenScroll) {
-                const _this = this;
+                let me = this;
                 this.scroll.on('scroll', (pos) => {
-                  _this.$emit('scroll', pos);
+                  me.$emit('scroll', pos);
                 });
               }
+              console.log(this.scroll);
           },
           enable() {
               this.scroll && this.scroll.enable();

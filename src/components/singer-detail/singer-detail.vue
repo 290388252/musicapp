@@ -22,7 +22,8 @@
     export default{
         data() {
             return {
-                songs: []
+                songs: [],
+                lyricLists: []
             };
         },
         computed: {
@@ -56,6 +57,7 @@
             },
             _normalizeSongs(list) {
                 let ret = [];
+                console.log(this.lyricLists);
                 list.forEach((item) => {
                     let {musicData} = item;
                     if (musicData.songid && musicData.albumid) {
