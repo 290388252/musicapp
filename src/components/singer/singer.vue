@@ -29,13 +29,13 @@
   import ListView from '../../base/listview/listview.vue';
   import Loading from '../../base/loading/loading.vue';
   import {mapMutations} from 'vuex';
-  import {playListMixin} from '../../common/js/mixin';
+  import {playlistMixin} from '../../common/js/mixin';
 
   let HOT_NAME = '热门';
   let HOT_SINGER_LENGTH = 10;
 
     export default{
-      mixin: [playListMixin],
+      mixins: [playlistMixin],
       data() {
         return {
           singerList: []
@@ -47,8 +47,8 @@
         }, 500);
       },
       methods: {
-        handlePlayList(playlist) {
-          const bottom = playlist.length > 0 ? '60px' : '';
+        handlePlaylist(playList) {
+          const bottom = playList.length > 0 ? '60px' : '';
           this.$refs.singer.$el.style.bottom = bottom;
           this.$refs.list.refresh();
         },
