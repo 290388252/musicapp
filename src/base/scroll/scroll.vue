@@ -36,6 +36,7 @@
         methods: {
           _initScroll() {
               if (!this.$refs.wrapper) {
+                  console.log('bad');
                   return;
               }
               this.scroll = new BScroll(this.$refs.wrapper, {
@@ -43,9 +44,9 @@
                   click: this.click
               });
               if (this.listenScroll) {
-                let me = this;
+                const _this = this;
                 this.scroll.on('scroll', (pos) => {
-                  me.$emit('scroll', pos);
+                  _this.$emit('scroll', pos);
                 });
               }
           },

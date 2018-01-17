@@ -17,8 +17,11 @@
           <h1 class="title">{{currentSong.name}}</h1>
           <h2 class="subtitle">{{currentSong.singer}}</h2>
         </div>
-        <div class="middle">
-          <div class="middle-l">
+        <div class="middle"
+                    @touchstart.prevent="middleTouchStart"
+                    @touchmove.prevent="middleTouchMove"
+                    @touchend="middleTouchEnd">
+          <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdwrapper">
               <div class="cd" :class="cdCls">
                 <img :src="currentSong.image" class="image">
@@ -318,6 +321,7 @@
   import { ERR_OK } from '../../api/config';
 
   const transform = prefixStyle('transform');
+  const transitionDuration = prefixStyle('transitionDuration');
   export default{
     data() {
         return {
@@ -358,6 +362,7 @@
       ])
     },
     created() {
+      this.touch = {};
       console.log(this.currentSong);
       this._getLyrics();
     },
@@ -507,6 +512,61 @@
           list = shuffle(this.sequenceList);
           console.log(list);
         }
+      },
+      middleTouchStart(e) {
+          this.touch.initiated = true;
+          const touch = e.touches[0];
+          this.touch.startX = touch.pageX;
+          this.touch.startY = touch.pageY;
+      },
+      middleTouchMove(e) {
+          if (!this.touch.initiated) {
+              return;
+          }
+          const touch = e.touches[0];
+          const detalX = touch.pageX - this.touch.startX;
+          const detalY = touch.pageY - this.touch.startY;
+          if (Math.abs(detalY) > Math.abs(detalX)) {
+              return;
+          }
+          const left = this.currentShow === 'cd' ? 0 : -window.innerWidth + 32;
+          const width = Math.min(0, Math.max(-window.innerWidth, left + detalX));
+          this.touch.percent = Math.abs(width / window.innerWidth);
+          this.$refs.lyric.$el.style[transform] = `translate3d(${width}px,0,0)`;
+          this.$refs.lyric.$el.style[transitionDuration] = 0;
+          this.$refs.middleL.style.opacity = 1 - this.touch.percent;
+          this.$refs.middleL.style[transitionDuration] = 0;
+      },
+      middleTouchEnd() {
+        let offsetWidth;
+        let opacity;
+        if (this.currentShow === 'cd') {
+          if (this.touch.percent > 0.1) {
+            offsetWidth = -window.innerWidth + 32;
+            opacity = 0;
+            this.currentShow = 'lyric';
+            this.touch.percent = undefined;
+          } else {
+            offsetWidth = 0;
+            opacity = 1;
+          }
+        } else {
+          if (this.touch.percent < 0.9) {
+            offsetWidth = 0;
+            this.currentShow = 'cd';
+            opacity = 1;
+            this.touch.percent = undefined;
+          } else {
+            offsetWidth = -window.innerWidth + 32;
+            opacity = 0;
+          }
+        }
+        const time = 300;
+        this.$refs.lyric.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`;
+        this.$refs.lyric.$el.style[transitionDuration] = `${time}ms`;
+        this.$refs.middleL.style.opacity = opacity;
+        this.$refs.middleL.style[transitionDuration] = `${time}ms`;
+        this.touch.initiated = false;
       },
       _getLyrics() {
         this.$http.get('api/lyric').then((response) => {
