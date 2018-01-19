@@ -84,6 +84,12 @@ zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
 
 3.作用域和闭包 执行上下文
 变量提升理解
-说明this几种不同场景的应用
+说明this几种不同场景的应用 ： (
+  作为构造函数，对象，普通函数执行 call bind apply
+  call可以改变this的值
+  function f1 (name) {alert(name); console.log(this)}
+  f1.call({a:1},'yanchao') //{a: 1}
+)
+
 作用域
 闭包作用
