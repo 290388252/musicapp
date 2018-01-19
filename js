@@ -37,8 +37,53 @@ f.printName = function() {
 f.printName();
 f.alertName();  f的构造函数是Foo  f.__proto__ === Foo.prototype
 f.hasOwnProtoType 判断是否是自身有的属性而不是从构造函数里继承来的
+f的__proto__指向Foo的显式原型。Foo的构造函数是个Object, Object的__proto__是null，最顶的终点就是null
 
 如何判断一个变量是数组类型
+  答：用instanceof
 写一个原型链继承例子
+1:
+function Foo1() {
+  this.foo1 = function() {
+    console.log('foo1')
+  }
+}
+function Foo2() {
+  this.foo2 = function() {
+    console.log('foo2')
+  }
+}
+Foo2.prototype = new Foo1()
+var f = new Foo2()
+2:
+function Element(id) {
+  this.element = document.getElementById(id)
+}
+Element.prototype.html = function(val) {
+  var element = this.element;
+  if (val) {
+    element.innerHTML = val
+    return this;
+  } else {
+    return element.innerHTML
+  }
+}
+Element.prototype.on = function(val) {
+       var element = this.element;
+       element.addEventListener(type, fn)
+}
+var div1 = new Element('div1')
+f的__proto__指向Foo2,Foo2原本的__proto__指向Object,但是被Foo2.prototype = new Foo1()改变了继承所以指向Foo1
 描述new一个对象的过程
-zepto中如何使用原型链
+function Foo(name, age) {
+  this.name = name;
+  this.age = age;
+  // return this 默认有这行，返回一个this对象
+}
+zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
+
+3.作用域和闭包 执行上下文
+变量提升理解
+说明this几种不同场景的应用
+作用域
+闭包作用
