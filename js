@@ -6,6 +6,31 @@ js typeof几种类型
      0 NaN false 都是false
 window.onload 和 DOMContentLoaded 区别
 用js创建10个<a>标签，点击的时候弹出来对应的序号
+ 答:
+ 这样写是错误的, 点击时会每次都是显示10，
+ var i, a;
+ for(i = 0; i < 10; i++) {
+    a = document.createElement('a')
+    a.innerHTML = i + '<br>'
+    a.addEventListener('click',function(e) {
+      e.preventDefault()
+      alert(i)
+    })
+    document.body.appendChild(a)
+ }
+ 应该改为
+ var i;
+  for(i = 0; i < 10; i++) {
+      (function (i){
+           var a = document.createElement('a')
+           a.innerHTML = i + '<br>'
+           a.addEventListener('click',function(e) {
+             e.preventDefault()
+             alert(i)
+           })
+           document.body.appendChild(a)
+      })(i);
+  }
 如何实现一个模块加载器实现类似require.js的基本功能
 实现数组的随机排序
 
@@ -83,7 +108,8 @@ function Foo(name, age) {
 zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
 
 3.作用域和闭包 执行上下文
-变量提升理解
+变量提升理解 答：函数声明和函数表达式
+作用域理解 答：自由变量 作用域链 闭包两个场景
 说明this几种不同场景的应用 ： (
   作为构造函数，对象，普通函数执行 call bind apply
   call可以改变this的值
@@ -104,6 +130,51 @@ zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
 )
 
 作用域
+无块作用
+if (true) { var name = 'a'; } console.log(name)  //a
+var name; if (true) { name = 'a'; } console.log(name)  //a
+但是有函数和全局的区分
+var a = 1;
+function fn() {var a = 2; console.log(a)}
+console.log(a) // 1
+fn() // 2
 
+作用域链
+var a = 1
+function f1() {
+  var b = 2;
+  function f2() {
+    var c = 3;
+    console.log(a) //自由变量 向父级找
+    console.log(b) //自由变量
+    console.log(c)
+    }
+    f2()
+  }
+闭包作用 主要用于封装变量收敛权限
 
-闭包作用
+function f1() {
+  var a = 100;
+  return function() {
+    console.log(a)
+  }
+}
+var f = f1()
+var a = 200
+f() //100
+
+function f1() {
+  var a = 100;
+  return function() {
+    console.log(a)
+  }
+}
+var f = f1()
+function f2(fn) {
+  var a = 200
+  fn()
+}
+f2(f) //100
+
+4 异步单线程
+
