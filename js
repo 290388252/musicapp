@@ -177,4 +177,53 @@ function f2(fn) {
 f2(f) //100
 
 4 异步单线程
+同步和异步的区别是什么
+异步和单线程的关系
+一个关于setTimeout的笔试题
+前端使用异步的场景有哪些
+  答：定时任务 网络请求 动态加载图片 事件绑定
 
+console.log(a)
+setTimeout(function() {console.log(b)},1000);
+console.log(c)
+//a c b
+不阻塞程序就用异步
+
+日期
+Date.now()
+var dt = new Date()
+getTime  getFullYear getMonth getDate getHours getMinutes getSeconds
+
+数组API
+forEach 遍历所有元素
+  var arr = [1,2,3]
+  arr.forEach(function(item,index) { console.log(index,item)})
+every 判断所有元素是否符合条件
+  var result = arr.every(function(item, index) {if(item < 4){return true}})
+  console.log(result)
+some判断是否有至少一个元素符合条件(同上 item < 2)
+sort排序
+  var arr = [1,4,5,2,3]
+  var arr2 = arr.sort(function(a,b) {return a-b})
+  console.log(arr2)
+map对元素重新封装，生成新数组
+  var arr = [1,4,5,2,3]
+  var arr2 = arr.map(function(item,index) {return '<b>'+item+'</b>'})
+  console.log(arr2)
+filter过滤符合条件的元素
+    var arr = [1,2,3]
+    var result = arr.every(function(item, index) {if(item >=2 ){return true}})
+    console.log(result)
+
+对象API
+var obj = {
+  x:1,
+  y:2,
+  z:3
+}
+var key
+for (key in obj){
+  if(obj.hasOwnProperty(key)) {
+    console.log(key,obj[key])
+  }
+}
