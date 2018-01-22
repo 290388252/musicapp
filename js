@@ -87,9 +87,23 @@ zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
 说明this几种不同场景的应用 ： (
   作为构造函数，对象，普通函数执行 call bind apply
   call可以改变this的值
-  function f1 (name) {alert(name); console.log(this)}
-  f1.call({a:1},'yanchao') //{a: 1}
+  var a = {
+  name : 'a',
+  f1: function () {
+    console.log(this.name)
+    }
+  }
+  a.f1() // a
+  a.f1.call({name: 'yanchao'}) //yanchao
+
+  function f2(name) {
+    console.log(this)
+  }
+  f2() // this === window
+  f2.call({x: 1},'yanchao') //this === 对象{x: 1}
 )
 
 作用域
+
+
 闭包作用
