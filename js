@@ -291,3 +291,61 @@ location.pathname ///learn/111....
 location.search
 
 history.back() forward()前进后退
+
+6事件
+编写一个通用的事件绑定监听函数？
+var btn = document.getElementById('div1')
+btn.addEventListener('click',function(){
+  log....
+})
+可以写成
+function bindEvent(elem,type,fn) {
+    elem.addEventListener(type,fn)
+}
+bindEvent(btn,'click',function(e){
+  e.preventDefault()阻止默认行为
+  log....
+})
+
+描述事件冒泡流程？
+<body>
+  <div id='div1>
+    <p id='1'>ok</p>
+    <p id='2'>no</p>
+    <p id='3'>no</p>
+    <p id='4'>no</p>
+  </div>
+  <div id='div2>
+      <p id='5'>no</p>
+      <p id='6'>no</p>
+   </div>
+</body>
+var p1 = document.getElementById('1')
+var body = document.body
+bindEvent(p1,'click',function(e){
+  e.stopPropatation()
+  alert('ok')
+})
+bindEvent(body,'click',function(e){
+  alert('no')
+})
+代理
+  <div id='div1>
+    <p id='1'>ok</p>
+    <p id='2'>no</p>
+    <p id='3'>no</p>
+    <p id='4'>no</p>
+    //随时会新增更多的p标签
+  </div>
+  var div1 = document.getElementById('div1')
+  bindEvent(div1,'click',function(e){
+    var target = e.target
+    if(target.nodeName === 'A') {
+      alert(target.innerHTML)
+    }
+  })
+
+
+对于一个无限下拉加载图片的页面如何给每个图片进行事件绑定？
+
+
