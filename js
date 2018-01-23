@@ -364,7 +364,7 @@ function bindEvent(elem,type,selector,fn) {
 }
 var div1 = document.getElementById('div1')
 bindEvent(div1,'click',a,function(e){
-  log(this.innerHTML)
+  logs(this.innerHTML)
 })
 var a = document.getElementById('a')
 bindEvent(div1,'click',function(e){
