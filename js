@@ -1,11 +1,11 @@
 1.变量类型和计算
-js typeof几种类型
+js typeof几种类型？
  答: undefinded string number array object function
-何时用 === 和 ==
+何时用 === 和 ==？
  答：obj.a == null  相当于 obj.a === null obj.a === undefinded
      0 NaN false 都是false
 window.onload 和 DOMContentLoaded 区别
-用js创建10个<a>标签，点击的时候弹出来对应的序号
+用js创建10个<a>标签，点击的时候弹出来对应的序号？
  答:
  这样写是错误的, 点击时会每次都是显示10，
  var i, a;
@@ -108,9 +108,9 @@ function Foo(name, age) {
 zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
 
 3.作用域和闭包 执行上下文
-变量提升理解 答：函数声明和函数表达式
-作用域理解 答：自由变量 作用域链 闭包两个场景
-说明this几种不同场景的应用 ： (
+变量提升理解？ 答：函数声明和函数表达式
+作用域理解？ 答：自由变量 作用域链 闭包两个场景
+说明this几种不同场景的应用？ ： (
   作为构造函数，对象，普通函数执行 call bind apply
   call可以改变this的值
   var a = {
@@ -177,10 +177,10 @@ function f2(fn) {
 f2(f) //100
 
 4 异步单线程
-同步和异步的区别是什么
-异步和单线程的关系
-一个关于setTimeout的笔试题
-前端使用异步的场景有哪些
+同步和异步的区别是什么？
+异步和单线程的关系？
+一个关于setTimeout的笔试题？
+前端使用异步的场景有哪些？
   答：定时任务 网络请求 动态加载图片 事件绑定
 
 console.log(a)
@@ -227,3 +227,67 @@ for (key in obj){
     console.log(key,obj[key])
   }
 }
+获取随机数字符串长度要求一样
+var random = Math.random();
+var random = random + '0000000000';
+var random = random.slice(0, 10);
+
+封装一个能遍历数组和对象的forEach
+function forEach(obj, fn) {
+  var key;
+  if (obj instanceof Array) {
+    obj.forEach(function(item, index){
+      fn(item, index)
+    })
+  } else {
+    for(key in obj) {
+      　fn(key,obj[key])　
+    }
+  }
+}
+
+5 JS-Web API
+DOM和BOM操作 事件绑定 ajax请求 http协议 存储，页面弹框 定义window全局变量定义一个alert
+JS基础要遵循ECSMA 262 ， JS-Web API要遵循W3C
+
+DOM操作 document object model 文档对象模型的操作
+DOM是哪种基本的数据结构? 树
+DOM操作的常用API有哪些? 获取DOM节点 父节点子节点 节点的property attribute
+DOM节点的attr和property有何区别?
+property就是个JS对象的一个属性 obj{x:1,y:2} x和y就是obj的property
+attribute是对html标签属性的修改
+var pList = doucument.querySelectorAll('p')
+var p = pList[0]
+p.style.width = '100px'
+p.className = 'p1'
+p.nodeName
+p.nodeType
+
+attribute
+getAttribute
+
+DOM本质(浏览器把拿到的html代码结构化一个浏览器能识别并且js可以操作的一个模型而已)
+DOM节点操作
+getElementById获取元素 getElementsByTagName获取集合  getElementsByClassName获取集合  querySelectorAll获取集合
+
+DOM结构操作？
+新增节点 var p1 = createElement('p') p1.innerHTML = '' div1.appendChild(p1)移动节点
+获取父元素，parentElement
+子元素，childNodes
+删除节点  removeChild
+
+BOM browser object model
+如何检查浏览器的类型？
+拆分url的各个部分？
+
+navigator screen location history
+var ua = navigator.userAgent
+var isChrome = ua.indexOf('Chrome') //true or false
+
+screen.width....
+
+location.protocol // http:...
+location.pathname ///learn/111....
+location.search
+
+history.back() forward()前进后退
