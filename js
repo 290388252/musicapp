@@ -340,12 +340,36 @@ bindEvent(body,'click',function(e){
   var div1 = document.getElementById('div1')
   bindEvent(div1,'click',function(e){
     var target = e.target
-    if(target.nodeName === 'A') {
+    if(target.nodeName === 'P') {
       alert(target.innerHTML)
     }
   })
-
-
+完善绑定事件的函数添加一个代理
+function bindEvent(elem,type,selector,fn) {
+    if(fn == null){
+      fn = selector
+      selector = null
+    }
+    elem.addEventListener(type,function(e){
+      var target
+      if(selector){
+        target = e.target
+            if(target.matches(selector)) {
+              fn.call(target,e)
+            }
+      }else{
+        fn(e)
+      }
+    })
+}
+var div1 = document.getElementById('div1')
+bindEvent(div1,'click',a,function(e){
+  log(this.innerHTML)
+})
+var a = document.getElementById('a')
+bindEvent(div1,'click',function(e){
+  log(a.innerHTML)
+})
 对于一个无限下拉加载图片的页面如何给每个图片进行事件绑定？
 
 
