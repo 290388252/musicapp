@@ -416,3 +416,13 @@ API太简单需要封装才好，本身直接使用document.cookie=...获取和�
 sessionStorage localStorage
 容量有5M API简易 localStorage.setItem(key,value) localStorage.getItem(key)
 IOS safari隐藏模式下localStorage会报错统一用try catch封装一下
+
+7开发环境
+IDE
+git版本管理 git add, git checkout xxx, git commit -m "xxx", git push origin master, git pull origin master
+js模块化
+打包工具
+上线回滚流程
+
+模块化
+
