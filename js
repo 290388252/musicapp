@@ -424,5 +424,8 @@ js模块化
 打包工具
 上线回滚流程
 
-模块化
+模块化 var a = require('xxx.js') export{function...}
 
+AMD
+是一个异步模块加载的定义 require.js
+全局define函数 全局require函数 依赖JS会自动
