@@ -307,7 +307,7 @@ bindEvent(btn,'click',function(e){
   log....
 })
 
-描述事件冒泡流程？
+描述事件冒泡流程？  DOM树形结构  事件冒泡 阻止冒泡
 <body>
   <div id='div1>
     <p id='1'>ok</p>
@@ -329,7 +329,9 @@ bindEvent(p1,'click',function(e){
 bindEvent(body,'click',function(e){
   alert('no')
 })
-代理
+
+对于一个无限下拉加载图片的页面如何给每个图片进行事件绑定？
+代理的好处代码简洁，浏览器压力小，
   <div id='div1>
     <p id='1'>ok</p>
     <p id='2'>no</p>
@@ -363,13 +365,54 @@ function bindEvent(elem,type,selector,fn) {
     })
 }
 var div1 = document.getElementById('div1')
-bindEvent(div1,'click',a,function(e){
+bindEvent(div1,'click','a',function(e){
   logs(this.innerHTML)
 })
 var a = document.getElementById('a')
 bindEvent(div1,'click',function(e){
   log(a.innerHTML)
 })
-对于一个无限下拉加载图片的页面如何给每个图片进行事件绑定？
 
+6-1 Ajax
+手动编写一个ajax，不依赖第三方库?
+跨域的几种实现方式?
+XMLHttpRequest？
+状态码说明？
+跨域？JSONP 服务器端设置http header。浏览器有同源策略，不允许ajax访问其他域的接口。
+跨域条件： 协议（http） 域名（www.????.com） 端口(在com后面又个端口号没写的话就默认80) 有一个不同就算跨域
+link script可以CDN跨域 img也可以跨域
+跨域必须经过信息提供的允许，如果未经允许即可获取那就是浏览器同源策略出现了漏洞
+JSONP的实现原理定义callback函数
+https://www.baidu.com/xxx.html
+xxx.html可以是个动态生成的名字服务器不一定存在它
 
+服务器端的就
+第二个参数填写允许跨域的名称不建议直接写*
+response.setHeader("Access-Control-Allow-Origin","http://a.com,http://b.com")
+response.setHeader("Access-Control-Allow-Header","X-Requested-With")
+response.setHeader("Access-Control-Allow-Methods","PUT,GET,DELETE,POST,OPTIONS")
+接受跨域的cookie
+response.setHeader("Access-Control-Allow-Credentials","true")
+
+var xhr = new XMLHttpRequest()
+xhr.open('GET','/api',false)
+xhr.onreadystatechange = function(){
+//这里的函数异步执行可以参考之前JS基础的异步模块
+  if(xhr.readyState == 4){ //readyState 0未初始化 1载入 2载入完成 3交互 4完成响应
+    if (xhr.status == 200) { //status 2xx表示请求成功 3xx需要重定向，浏览器直接跳 404，4xx客户端请求错误 5xx服务端错
+      alert(xhr.responseText)
+    }
+  }
+}
+xhr.send(null)
+IE低版本用ActiveXObject,忽略这类吧
+
+6-2存储
+描述cookie sessionStorage localStorage区别？cookie会每次随http请求一起发送，sessionStorage localStorage不会
+
+cookie 只有4kb大小，本身用于客户端和服务端的通讯 但是他本身就有本地存储的功能于是被借用了
+API太简单需要封装才好，本身直接使用document.cookie=...获取和修改
+
+sessionStorage localStorage
+容量有5M API简易 localStorage.setItem(key,value) localStorage.getItem(key)
+IOS safari隐藏模式下localStorage会报错统一用try catch封装一下
