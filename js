@@ -425,7 +425,133 @@ js模块化
 上线回滚流程
 
 模块化 var a = require('xxx.js') export{function...}
+export{
+  getFormatDate: function(date,type){
+  if(type === 1){
+          return '2017-06-15'
+        }
+        if(type === 2){
+                return '2017年06月15日'
+              }
+  }
+}
+var getFormatDate = require('util.js')
+export{
+  agetFormatDate: function(date){
+    return getFormatDate(date,2)
+  }
+}
 
+var agetFormatDate = require('a-util.js')
+var dt = new Date()
+agetFormatDate(dt)
 AMD
 是一个异步模块加载的定义 require.js
-全局define函数 全局require函数 依赖JS会自动
+全局define函数 全局require函数 依赖JS会自动 异步加载
+//util.js
+define(function(){
+  return{
+    getFormatDate: function(date,type){
+      if(type === 1){
+        return '2017-06-15'
+      }
+      if(type === 2){
+              return '2017年06月15日'
+            }
+    }
+  }
+})
+//a-util.js
+define(['./util.js'],function(util){
+  return{
+    agetFormatDate: function(date){
+      return util.getFormatDate(date,2)
+    }
+  }
+})
+//a.js
+define(['./a-util.js'],function(autil){
+  return{
+    print: function(date){
+      console.log(return autil.agetFormatDate(date,2))
+    }
+  }
+})
+//main.js
+require([./a.js],function(a){
+  var date = new Date()
+  a.print(date)
+})
+引用的方式
+<script src="/require.js" data-main="./main.js"></script>
+
+commonJS
+nodejs模块化规范现在被大量用前端，前端开发依赖的插件和库都可以从npm获取
+构建工具的高度自动化使得用npm比较简单成本低
+commonJS不会异步加载JS而是同步一次性加载
+module.exports{
+  getFormatDate: function(date,type){
+  if(type === 1){
+          return '2017-06-15'
+        }
+        if(type === 2){
+                return '2017年06月15日'
+              }
+  }
+}
+var util = require('util.js')
+module.exports{
+  agetFormatDate: function(date){
+    return util.getFormatDate(date,2)
+  }
+}
+
+var agetFormatDate = require('a-util.js')
+var dt = new Date()
+agetFormatDate(dt)
+
+要异步加载就用AMD
+用了npm就建议用commonJS
+
+npm和nodejs安装
+npm install http-server
+http-server -p 8080
+npm install webpack
+npm init
+
+//packjson
+{
+  "name": "webpack-test",
+  "version": "1.0.0",
+  "description": "webpacktest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack"
+  },
+  "author": "yanchao",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^3.10.0"
+  }
+}
+//webpack.config.js
+var path = require('path')
+var webpack = require('webpack')
+
+module.exports = {
+	context:path.resolve(__dirname,'./src'),
+	entry: {
+		app: './app.js'
+	},
+	output: {
+		path: path.resolve(__dirname,'./dist'),
+		filename: 'bundle.js'
+	},
+	//代码压缩
+	plugins: [
+	  new webpack.optimize.UglifyJsPlugin()
+	]
+}
+目录下创建src文件，里面创建app.js
+npm start
