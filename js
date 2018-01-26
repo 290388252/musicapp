@@ -31,7 +31,6 @@ window.onload 和 DOMContentLoaded 区别
            document.body.appendChild(a)
       })(i);
   }
-如何实现一个模块加载器实现类似require.js的基本功能
 实现数组的随机排序
 
 2.原型链 构造函数 原型规则 原型链 instanceof
@@ -106,6 +105,8 @@ function Foo(name, age) {
   // return this 默认有这行，返回一个this对象
 }
 zepto中如何使用原型链  《查看移动端开发框架Zepto.js入门》
+  参考jQueryAPI改造的简化的
+
 
 3.作用域和闭包 执行上下文
 变量提升理解？ 答：函数声明和函数表达式
