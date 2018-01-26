@@ -555,3 +555,78 @@ module.exports = {
 }
 目录下创建src文件，里面创建app.js
 npm start
+
+8 页面加载
+从输入url到得到html的详细过程
+window.onload和DOMContentLoaded的区别
+window.addEventListener('load',function(){页面全部资源加载完才会执行....})
+document.addEventListener('DOMContentLoaded',function(){DOM渲染完即可执行此时图片视频可能还没加载完....})
+加载资源的形式
+  输入url或跳转页面加载html 加载html中的静态资源 script src=""....
+
+加载一个资源的过程
+ 浏览器根据DNS服务器得到域名的IP地址
+ 向这个IP的机器发送http请求
+ 服务器收到处理并返回http请求
+ 浏览器得到返回内容
+
+浏览器渲染页面的过程
+  根据HTML结构生成DOM Tree
+  根据CSS生成CSSOM
+  将DOM和CSSOM整合成RenderTree
+  根据RenderTree开始渲染和展示
+  遇到script会执行并且阻塞渲染
+为什么要把css放在head中，因为加载前就可以先加载了样式，加载顺序问题
+为什么要把js放在body最下面，因为要先把DOM加载，script会阻塞DOM加载，而且script可以改变操作DOM，所以最后进行加载。
+
+性能优化
+多使用内存缓存或者其他方法
+//未使用缓存
+var i
+for(i = 0; i < document.getElementByTagName('p').length; i++){}
+//使用缓存
+var i
+var pList = document.getElementByTagName('p');
+for(i = 0; i < pList.length; i++){}
+
+createDocumentFragment()也可以配合使用缓存
+
+减少CPU计算和网络
+静态压缩合并
+静态资源缓存不用请求多次
+使用CDN让资源加载更快。
+使用SSR后端渲染数据之间输出到HTML中
+CSS放前面 JS放后面
+懒加载
+<img id="img1" src="preview.png" data-realsrc="a.png">
+var img1 = document.getElementById("img1")
+img1.src = img1.getAttribute("data-realsrc")
+减少DOM查询对它做缓存尽量合并一起执行
+事件节流
+var textarea = document.getElementById('text')
+var timeoutId
+textarea.addEventListener('keyup',function(){
+  if  (timeoutId){
+    clearTimeout(timeoutId)
+  }
+  timeoutId = setTimeout(function(){
+    //触发change事件
+  },1000)
+})
+
+安全性
+XSS跨站请求攻击
+ 在新浪博客写个文章，偷偷插入个script，攻击代码中把cookie放到自己的服务器中
+ 有人看文章就会运行到偷偷插入的script，就会把查看者的数据
+解决
+ 前端替换关键字 <换成&lt,一般由后端替换这个问题
+
+XSRF跨站请求伪造
+  登录一个购物网站买东西，付费网站接口给你但是没有验证，然后收到一个隐藏img的邮件
+解决
+  增加验证流程如指纹密码短信验证
+
+
+
+
+
