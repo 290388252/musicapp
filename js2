@@ -12,3 +12,61 @@ nodejs
 github
 把握面试沟通方向
 
+var https = require('https');
+var cheerio = require('cheerio');
+var url = 'https://www.imooc.com/learn/348';
+https.get(url,function(res){
+	var html = '';
+
+	res.on('data', function(data) {
+		html += data;
+	});
+
+	res.on('end', function() {
+
+
+		var courseData = filterChapters(html);
+		//printData(courseData);
+		console.log(courseData);
+	});
+}).on('error',function(){
+	console.log('error get')
+})
+
+function filterChapters(html){
+	var c = cheerio.load(html);
+	var chapters = c('.chaper');
+	var courseData = [];
+
+	chapters.each(function(item){
+		var chaper = c(this);
+		var chaperTitle = chaper.find('strong').text();
+		var videos = chaper.find('.video').children('li')
+		var chaperData = {
+			chaperTitle: chaperTitle,
+			videos: []
+		}
+		videos.each(function(item) {
+			var video = c(this).find('J-media-item');
+			var videoTitle = video.text();
+			var id = video.attr('href').split('video')[1];
+			chaperData.videos.push({
+				title:videoTitle,
+				id:id
+			})
+		})
+		courseData.push(chaperData);
+	});
+	return courseData;
+}
+
+function printData(courseData) {
+	courseData.forEach(function(item) {
+		var chapterTitle = item.chaperTitle;
+		console.log(chapterTitle + '\n')
+
+		item.videos.forEach(function(item) {
+			console.log('[' + item.id + ']' + item.title + '\n')
+		})
+	});
+}
