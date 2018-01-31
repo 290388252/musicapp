@@ -25,9 +25,9 @@ https.get(url,function(res){
 	res.on('end', function() {
 
 
-		var courseData = filterChapters(html);
-		//printData(courseData);
-		console.log(courseData);
+		 var courseData = filterChapters(html);
+		 printData(courseData);
+		//console.log(c(this).find('strong'));
 	});
 }).on('error',function(){
 	console.log('error get')
@@ -35,10 +35,10 @@ https.get(url,function(res){
 
 function filterChapters(html){
 	var c = cheerio.load(html);
-	var chapters = c('.chaper');
+	var chapters = c('.mod-chapters');
 	var courseData = [];
 
-	chapters.each(function(item){
+	chapters.find('.chapter').each(function(item){
 		var chaper = c(this);
 		var chaperTitle = chaper.find('strong').text();
 		var videos = chaper.find('.video').children('li')
@@ -47,11 +47,13 @@ function filterChapters(html){
 			videos: []
 		}
 		videos.each(function(item) {
-			var video = c(this).find('J-media-item');
-			var videoTitle = video.text();
-			var id = video.attr('href').split('video')[1];
+			var video = c(this).find('.J-media-item');
+			var videoTitle = video.text().trim().split('\n')[0].trim();
+			var videoTime = video.text().trim().split('\n')[1].trim();
+			var id = String(video.attr('href')).split('/video/')[1];
 			chaperData.videos.push({
 				title:videoTitle,
+				videoTime:videoTime,
 				id:id
 			})
 		})
@@ -63,10 +65,10 @@ function filterChapters(html){
 function printData(courseData) {
 	courseData.forEach(function(item) {
 		var chapterTitle = item.chaperTitle;
-		console.log(chapterTitle + '\n')
+		console.log(chapterTitle)
 
 		item.videos.forEach(function(item) {
-			console.log('[' + item.id + ']' + item.title + '\n')
+			console.log('[' + item.id + ']' + item.title + item.videoTime)
 		})
 	});
 }
