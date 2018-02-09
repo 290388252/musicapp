@@ -1,12 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 
-let target = path.join(__dirname,process.argv[2] || './'); 
-let depth = 0; 
+let target = path.join(__dirname,process.argv[2] || './');
+let depth = 0;
 
 function load(target,depth){
+  /*
+   new Array(2).join('| ')
+   "| "
+   new Array(3).join('| ')
+   "| | "
+   new Array(1).join('| ')
+   ""
+   */
 	let prefix = new Array(depth + 1).join('| ');
-	
+
 	let dirinfos = fs.readdirSync(target);
 	let dirs = [];
 	let files = [];
@@ -28,5 +36,5 @@ function load(target,depth){
    files.forEach(file=>{
 	console.log(`${prefix}${count-- ? '├' : '└'}-${file}`);
    })
-} 
+}
 load(target,0);
