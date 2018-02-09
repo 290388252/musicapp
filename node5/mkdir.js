@@ -9,7 +9,11 @@ function mkdir(pathname,callback){
 	try{
     let pre = '';
     folders.forEach(folder=>{
-      fs.mkdirSync(path.join(__dirname,pre,folder));
+      try {
+        fs.statSync(path.join(__dirname,pre,folder));
+      }catch (err){
+        fs.mkdirSync(path.join(__dirname,pre,folder));
+      }
       pre = path.join(pre,folder);
     });
     callback && callback();
