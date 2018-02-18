@@ -3,16 +3,16 @@ let clients = [];
 
 let server = net.createServer((socket)=>{
 	clients.push(socket);
-	
+
 	let client = socket.address();
 	console.log('Welcome'+socket.remoteAddress +'conncet into out room');
 	//socket.write(`hello ${socket.remoteAddress}:${socket.remotePort}你来了,地址:${client.address}`);
-	
+
 	socket.on('data',(chunk)=>{
 		try{
 		  let signal = JSON.parse(chunk.toString());
 		  let procotol = signal.procotol;
-		  
+
 		  switch(procotol) {
 			  case 'boardcast':
 			   boardcast(signal);
@@ -24,9 +24,14 @@ let server = net.createServer((socket)=>{
 		}catch(err){
 			console.log('error:'+err);
 		}
-		 
-		
+
+
 	});
+
+	socket.on('error',(err)=>{
+	  console.log(`${socket.remoteAddress} logout`);
+	  clients = clients.splice(clients.indexOf(socket),1);
+  });
 	function boardcast(signal){
 		console.log(signal);
 		let username = signal.from;
